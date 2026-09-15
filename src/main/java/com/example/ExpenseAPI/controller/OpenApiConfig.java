@@ -14,12 +14,9 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI expenseApi() {
 
-        return new OpenAPI().info(new Info().title("Expense Tracker API").description("REST API for managing personal expenses").version("1.0")
-                ).addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
+        return new OpenAPI().info(new Info().title("Expense Tracker API").description("REST API for managing personal expenses").version("1.0"))
+                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components().addSecuritySchemes("Bearer Authentication", new SecurityScheme()
-                                .name("Bearer Authentication").type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
-                        )
-                );
-
+                .name("Bearer Authentication").type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
     }
 }
