@@ -11,7 +11,7 @@ After running the application, access:
 
 http://localhost:8080/swagger-ui/index.html
 Running the Application
-Requirements
+Requirements:
 Java installed
 PostgreSQL installed
 Maven installed (or use the included Maven wrapper)
