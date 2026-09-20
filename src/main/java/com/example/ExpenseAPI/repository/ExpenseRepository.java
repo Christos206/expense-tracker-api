@@ -13,11 +13,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface ExpenseRepository  extends JpaRepository<Expense, Long>, JpaSpecificationExecutor<Expense> {
-
+public interface ExpenseRepository  extends JpaRepository<Expense, Long> {
     List<Expense> findByUser(User user);
     Optional<Expense> findByIdAndUser(Long id, User user);
     List<ExpenseResponseDto> findByUserAndCategory(User user, ExpenseCategory category);
     List<Expense> findByUserAndDateBetween(User user, LocalDate startDate, LocalDate endDate);
-    Page<Expense> findByUser(User user, Pageable pageable);
 }
