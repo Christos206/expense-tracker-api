@@ -23,6 +23,7 @@ public class JwtService {
     private Integer expiration;
 
     private Key getSigningKey() {
+
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -46,10 +47,12 @@ public class JwtService {
     }
 
     public String extractUsername(String token) {
+
         return extractAllClaims(token).getSubject();
     }
 
     public Date extractExpiration(String token) {
+
         return extractAllClaims(token).getExpiration();
     }
 

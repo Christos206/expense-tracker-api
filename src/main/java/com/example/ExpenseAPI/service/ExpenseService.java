@@ -8,12 +8,6 @@ import com.example.ExpenseAPI.model.User;
 import com.example.ExpenseAPI.repository.ExpenseRepository;
 
 import com.example.ExpenseAPI.repository.UserRepository;
-import com.example.ExpenseAPI.specification.ExpensesSpecification;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -39,7 +33,6 @@ public class ExpenseService {
     }
 
     public ExpenseResponseDto createExpense(ExpenseRequestDto requestDto) {
-
         User user = getCurrentUser();
         Expense expense = new Expense();
 
@@ -57,7 +50,6 @@ public class ExpenseService {
 
     public ExpenseResponseDto getExpenseById(Long id) {
         User user = getCurrentUser();
-
         Expense expense = expenseRepository.findByIdAndUser(id, user).orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
 
         return mapToResponseDto(expense);
@@ -92,9 +84,9 @@ public class ExpenseService {
         return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
+    //** TO USE IN THE FUTURE **//
     public List<ExpenseResponseDto> getExpensesByCategory(ExpenseCategory category) {
         User user = getCurrentUser();
-
         return expenseRepository.findByUserAndCategory(user, category);
     }
 
@@ -103,17 +95,15 @@ public class ExpenseService {
         return new ExpenseResponseDto(expense.getId(), expense.getTitle(), expense.getAmount(), expense.getCategory(), expense.getDate());
     }
 
+    //** TO USE IN THE FUTURE **//
     public List<ExpenseResponseDto> getExpensesByDateRange(LocalDate startDate, LocalDate endDate) {
         User user = getCurrentUser();
-
         return expenseRepository.findByUserAndDateBetween(user, startDate, endDate).stream().map(this::mapToResponseDto).toList();
     }
 
     public ExpenseSummaryDto getExpensesSummary() {
         User user = getCurrentUser();
-
         List<Expense> expenses = expenseRepository.findByUser(user);
-
         ExpenseSummaryDto summary = new ExpenseSummaryDto();
 
         double total = expenses.stream().mapToDouble(Expense::getAmount).sum();
@@ -128,42 +118,5 @@ public class ExpenseService {
 
         return summary;
 
-    }
-
-    public ExpensePageResponseDto getExpenses(ExpenseCategory category, LocalDate from, LocalDate to, int page, int size, String sortBy, String direction) {
-        User user = getCurrentUser();
-
-        Sort sort;
-
-        List<String> allowedSortFields = List.of("id", "title", "amount", "category", "date");
-
-        if (!allowedSortFields.contains(sortBy)) {
-            throw new IllegalArgumentException("Invalid sort field");
-        }
-
-        Specification<Expense> spec = Specification.where(ExpensesSpecification.hasUser(user));
-
-        if (category != null) {
-            spec = spec.and(ExpensesSpecification.hasCategory(category));
-        }
-
-        if (from != null && to != null) {
-            spec = spec.and(ExpensesSpecification.betweenDates(from, to));
-        }
-
-        if(direction.equalsIgnoreCase("desc")){
-            sort = Sort.by(sortBy).descending();
-        }
-        else {
-            sort = Sort.by(sortBy).ascending();
-        }
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        Page<Expense> resp = expenseRepository.findAll(spec, pageable);
-
-        List<ExpenseResponseDto> content = resp.getContent().stream().map(this::mapToResponseDto).toList();
-
-        return new ExpensePageResponseDto(content, resp.getNumber(), resp.getSize(), resp.getTotalElements(), resp.getTotalPages(), resp.isFirst(), resp.isLast());
     }
 }

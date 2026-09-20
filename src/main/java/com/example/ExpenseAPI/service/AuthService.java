@@ -13,8 +13,6 @@ import com.example.ExpenseAPI.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class AuthService {
 
@@ -31,12 +29,12 @@ public class AuthService {
     }
 
     public RegisterResponseDto register(RegisterRequestDto requestDto) {
-        Role optionalRole = roleRepository.findByName(RoleEnum.USER).orElseThrow(() -> new RuntimeException("USER role not found"));
+        Role defaultRole = roleRepository.findByName(RoleEnum.USER).orElseThrow(() -> new RuntimeException("USER role not found"));
 
         User user = new User();
         user.setUsername(requestDto.getUsername());
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-        user.setRole(optionalRole);
+        user.setRole(defaultRole);
 
         if (userRepository.findByUsername(requestDto.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Username already exists");
@@ -59,7 +57,7 @@ public class AuthService {
         return new LoginResponseDto(token);
     }
 
-    public void deleteuser(Long id){
+    public void deleteUser(Long id){
         userRepository.deleteById(id);
     }
 

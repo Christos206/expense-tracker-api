@@ -6,6 +6,7 @@ import com.example.ExpenseAPI.dto.RegisterRequestDto;
 import com.example.ExpenseAPI.dto.RegisterResponseDto;
 import com.example.ExpenseAPI.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,11 +33,12 @@ public class AuthController {
         return authService.login(requestDto);
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary =  "Delete a user")
     public void deleteUser(@PathVariable Long id) {
 
-        authService.deleteuser(id);
-
+        authService.deleteUser(id);
     }
 }

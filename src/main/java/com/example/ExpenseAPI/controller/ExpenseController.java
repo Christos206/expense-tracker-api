@@ -1,14 +1,13 @@
 package com.example.ExpenseAPI.controller;
 
 import com.example.ExpenseAPI.dto.*;
-import com.example.ExpenseAPI.model.ExpenseCategory;
 import com.example.ExpenseAPI.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/expenses")
@@ -21,10 +20,9 @@ public class ExpenseController {
     }
 
     @GetMapping
-    @Operation(summary = "Retrieve expenses", description = "Returns paginated expenses for the authenticated user.")
-    public ExpensePageResponseDto getExpenses(@RequestParam(required = false) ExpenseCategory category, @RequestParam(required = false) LocalDate from, @RequestParam(required = false) LocalDate to, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "asc") String direction) {
-
-        return expenseService.getExpenses(category, from, to, page, size, sortBy, direction);
+    @Operation(summary = "Retrieve expenses", description = "Returns expenses for the authenticated user.")
+    public List<ExpenseResponseDto> getExpenses() {
+        return expenseService.getAllExpenses();
     }
 
     @PostMapping
