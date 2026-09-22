@@ -1,13 +1,13 @@
 package com.example.ExpenseAPI.controller;
 
-import com.example.ExpenseAPI.dto.LoginRequestDto;
-import com.example.ExpenseAPI.dto.LoginResponseDto;
-import com.example.ExpenseAPI.dto.RegisterRequestDto;
-import com.example.ExpenseAPI.dto.RegisterResponseDto;
+import com.example.ExpenseAPI.dto.*;
+import com.example.ExpenseAPI.repository.UserRepository;
 import com.example.ExpenseAPI.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -41,4 +41,12 @@ public class AuthController {
 
         authService.deleteUser(id);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    @Operation(summary = "Retrieve all users", description = "Retrives All users")
+    public List<UserInfResponseDto> getallusers() {
+        return authService.getallusers();
+    }
+
 }
