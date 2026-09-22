@@ -1,9 +1,6 @@
 package com.example.ExpenseAPI.service;
 
-import com.example.ExpenseAPI.dto.LoginRequestDto;
-import com.example.ExpenseAPI.dto.LoginResponseDto;
-import com.example.ExpenseAPI.dto.RegisterRequestDto;
-import com.example.ExpenseAPI.dto.RegisterResponseDto;
+import com.example.ExpenseAPI.dto.*;
 import com.example.ExpenseAPI.model.Role;
 import com.example.ExpenseAPI.model.RoleEnum;
 import com.example.ExpenseAPI.model.User;
@@ -12,6 +9,8 @@ import com.example.ExpenseAPI.repository.UserRepository;
 import com.example.ExpenseAPI.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AuthService {
@@ -59,6 +58,17 @@ public class AuthService {
 
     public void deleteUser(Long id){
         userRepository.deleteById(id);
+    }
+
+    public List<UserInfResponseDto> getallusers() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new UserInfResponseDto(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getRole().getName()
+                ))
+                .toList();
     }
 
 }
