@@ -1,6 +1,8 @@
 package com.example.ExpenseAPI.service;
 
 import com.example.ExpenseAPI.dto.*;
+import com.example.ExpenseAPI.exception.InvalidCredentialsException;
+import com.example.ExpenseAPI.exception.ResourceNotFoundException;
 import com.example.ExpenseAPI.model.Role;
 import com.example.ExpenseAPI.model.RoleEnum;
 import com.example.ExpenseAPI.model.User;
@@ -28,6 +30,10 @@ public class AuthService {
     }
 
     public RegisterResponseDto register(RegisterRequestDto requestDto) {
+        if (userRepository.findByUsername(requestDto.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
         Role defaultRole = roleRepository.findByName(RoleEnum.USER).orElseThrow(() -> new RuntimeException("USER role not found"));
 
         User user = new User();
@@ -41,14 +47,14 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return new RegisterResponseDto("User added Succesfully");
+        return new RegisterResponseDto("User registered successfully");
     }
 
     public LoginResponseDto login(LoginRequestDto loginDto) {
-        User user = userRepository.findByUsername(loginDto.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(loginDto.getUsername()).orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid username or password");
         }
 
         String token = jwtService.generateToken(user.getUsername());
@@ -57,10 +63,12 @@ public class AuthService {
     }
 
     public void deleteUser(Long id){
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        userRepository.delete(user);
     }
 
-    public List<UserInfResponseDto> getallusers() {
+    public List<UserInfResponseDto> getAllusers() {
         return userRepository.findAll()
                 .stream()
                 .map(user -> new UserInfResponseDto(

@@ -1,10 +1,17 @@
 package com.example.ExpenseAPI.dto;
 
 import com.example.ExpenseAPI.model.ExpenseCategory;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
 public class ExpenseUpdateDto {
+
+    @NotBlank(message = "Title is required")
     private String title;
+
+    @Positive(message = "Amount must be positive")
     private double amount;
+    
     private ExpenseCategory category;
 
     public ExpenseUpdateDto(){

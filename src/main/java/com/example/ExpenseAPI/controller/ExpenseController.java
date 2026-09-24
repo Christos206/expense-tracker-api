@@ -26,7 +26,7 @@ public class ExpenseController {
     }
 
     @PostMapping
-    @Operation(summary = "Create expenses", description = "Creates expenses for the authenticated user.")
+    @Operation(summary = "Create an expense", description = "Creates expense for the authenticated user.")
     public ExpenseResponseDto createExpense(@Valid @RequestBody ExpenseRequestDto requestDto) {
         return expenseService.createExpense(requestDto);
     }
@@ -46,10 +46,7 @@ public class ExpenseController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Updates an expense", description = "Updates an expense for the authenticated user with the given id.")
-    public ExpenseResponseDto updateExpense(
-            @PathVariable Long id,
-            @Valid @RequestBody ExpenseUpdateDto requestDto
-    ) {
+    public ExpenseResponseDto updateExpense(@PathVariable Long id, @Valid @RequestBody ExpenseUpdateDto requestDto) {
         return expenseService.updateExpense(id, requestDto);
     }
 

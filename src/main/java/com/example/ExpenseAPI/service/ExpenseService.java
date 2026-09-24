@@ -87,7 +87,7 @@ public class ExpenseService {
     //** TO USE IN THE FUTURE **//
     public List<ExpenseResponseDto> getExpensesByCategory(ExpenseCategory category) {
         User user = getCurrentUser();
-        return expenseRepository.findByUserAndCategory(user, category);
+        return expenseRepository.findByUserAndCategory(user, category).stream().map(this::mapToResponseDto).toList();
     }
 
     private ExpenseResponseDto mapToResponseDto(Expense expense) {
@@ -107,7 +107,7 @@ public class ExpenseService {
         ExpenseSummaryDto summary = new ExpenseSummaryDto();
 
         double total = expenses.stream().mapToDouble(Expense::getAmount).sum();
-        double average = total == 0 ? 0 : total / expenses.size();
+        double average = expenses.isEmpty() ? 0 : total / expenses.size();
         double highest = expenses.stream().mapToDouble(Expense::getAmount).max().orElse(0);
         long num = expenses.size();
 
