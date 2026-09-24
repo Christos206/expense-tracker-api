@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String,String>> handleNotFound(ResourceNotFoundException exception) {
+
         Map<String,String> error = new HashMap<>();
 
         error.put("error", exception.getMessage());
@@ -33,12 +34,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgument(
-            IllegalArgumentException exception) {
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException exception) {
 
         return new ResponseEntity<>(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidCredentials(InvalidCredentialsException exception) {
+
+        Map<String, String> error = new HashMap<>();
+        error.put("error", exception.getMessage());
+
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 }

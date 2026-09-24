@@ -1,6 +1,5 @@
 package com.example.ExpenseAPI.dto;
 
-import com.example.ExpenseAPI.model.Role;
 import com.example.ExpenseAPI.model.RoleEnum;
 
 public class UserInfResponseDto {
